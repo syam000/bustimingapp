@@ -16,7 +16,18 @@ function loadWatched() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    // Only accept well-formed entries: a malformed/tampered localStorage
+    // record (e.g. `[null]`, or an entry missing `code`) would otherwise
+    // make init() throw when it later reads `stop.code`, breaking the app
+    // on every reload until the user manually clears storage.
+    return parsed
+      .filter((s) => s && typeof s === "object" && typeof s.code === "string" && s.code)
+      .map((s) => ({
+        code: s.code,
+        desc: typeof s.desc === "string" ? s.desc : "",
+        road: typeof s.road === "string" ? s.road : "",
+      }));
   } catch {
     return [];
   }

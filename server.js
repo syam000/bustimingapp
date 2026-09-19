@@ -131,10 +131,13 @@ async function handleArrivals(req, res, query) {
 }
 
 const server = createServer(async (req, res) => {
-  const url = new URL(req.url, `http://${req.headers.host}`);
-  const { pathname, searchParams } = url;
-
   try {
+    // Use a fixed base: routing only needs the request path and query, and
+    // a malformed Host header would otherwise make `new URL` throw outside
+    // this try block, leaving the rejection unhandled for this listener.
+    const url = new URL(req.url, "http://localhost");
+    const { pathname, searchParams } = url;
+
     if (pathname === "/api/config") {
       sendJson(res, 200, { mode: LIVE_MODE ? "live" : "mock" });
     } else if (pathname === "/api/stops") {
