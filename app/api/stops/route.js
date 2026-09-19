@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { loadBusStops, searchBusStops } from "../../../lib/busStops.js";
 
 export const runtime = "nodejs";
@@ -8,5 +7,5 @@ export async function GET(request) {
   const q = searchParams.get("q") || "";
   const stops = await loadBusStops();
   const results = searchBusStops(stops, q);
-  return NextResponse.json({ count: results.length, stops: results.slice(0, 50) });
+  return Response.json({ count: results.length, stops: results.slice(0, 50) });
 }
