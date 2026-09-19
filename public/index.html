@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SG Bus Timing</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>🚌 SG Bus Timing</h1>
+    <span id="modeBadge" class="badge" title="Data source mode">…</span>
+  </header>
+
+  <main>
+    <section class="search-panel">
+      <label for="searchInput">Find a bus stop</label>
+      <input
+        id="searchInput"
+        type="text"
+        inputmode="search"
+        autocomplete="off"
+        placeholder="Search by stop code, road, or place (e.g. 83139, Orchard, Interchange)"
+      />
+      <ul id="searchResults" class="search-results" hidden></ul>
+    </section>
+
+    <section class="favorites-panel">
+      <div class="favorites-header">
+        <h2>Watched stops</h2>
+        <span class="hint">Tap a search result to add it here.</span>
+      </div>
+      <div id="favorites" class="favorites"></div>
+      <p id="emptyState" class="empty-state">
+        No stops added yet. Search above to add a bus stop and see live arrival times.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      Data source:
+      <a href="https://datamall.lta.gov.sg/" target="_blank" rel="noopener">LTA DataMall</a>
+      (Singapore open API) &mdash; refreshes every 15s.
+      <span id="modeNote"></span>
+    </p>
+  </footer>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "bustimingapp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Simple Singapore bus arrival timings web app backed by LTA DataMall open APIs.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "mock": "MOCK=1 node server.js",
+    "fetch-stops": "node scripts/fetch-stops.js",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
