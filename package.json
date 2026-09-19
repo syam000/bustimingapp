@@ -1,0 +1,23 @@
+{
+  "name": "bustimingapp",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Simple Singapore bus arrival timings web app (Next.js) backed by LTA DataMall open APIs.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "mock": "MOCK=1 next dev",
+    "fetch-stops": "node scripts/fetch-stops.js",
+    "test": "node --test test/**/*.test.js"
+  },
+  "dependencies": {
+    "next": "^16.0.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "engines": {
+    "node": ">=18.18"
+  },
+  "license": "MIT"
+}
