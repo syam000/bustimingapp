@@ -1,0 +1,4 @@
+node_modules/
+.env
+data/bus-stops.json
+*.log
