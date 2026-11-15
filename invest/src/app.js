@@ -1,5 +1,5 @@
-import { planInvest, planRebalance, portfolioSummary, blendedExpenseRatio, projectGrowth } from "/lib/allocate.js";
-import { MODEL_PORTFOLIOS, getInstrument } from "/lib/universe.js";
+import { planInvest, planRebalance, portfolioSummary, blendedExpenseRatio, projectGrowth } from "../lib/allocate.js";
+import { MODEL_PORTFOLIOS, getInstrument } from "../lib/universe.js";
 
 const STORE_KEY = "easyinvest.v1";
 const $ = (id) => document.getElementById(id);
