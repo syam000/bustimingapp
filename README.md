@@ -1,5 +1,8 @@
 # SG Bus Timing
 
+> This repo also contains **EasyInvest**, a separate ETF/stock investing
+> planner in [`invest/`](invest/README.md).
+
 A tiny, dependency-free web app that shows live bus arrival timings for
 Singapore bus stops, powered by the [LTA DataMall](https://datamall.lta.gov.sg/)
 open APIs. Built to run locally — nothing to deploy.
