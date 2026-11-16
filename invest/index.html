@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EasyInvest</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">◆</span>
+        <span>EasyInvest</span>
+      </div>
+      <span id="mode-badge" class="badge">…</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Know exactly what to buy.</h1>
+      <p>Pick a target mix of ETFs and stocks, enter how much you want to invest, and get a ready-to-place order list that keeps you on target. No guesswork, no spreadsheets.</p>
+    </section>
+
+    <!-- Step 1 -->
+    <section class="card" aria-labelledby="mix-h">
+      <div class="step-head">
+        <span class="step">1</span>
+        <div>
+          <h2 id="mix-h">Your target mix</h2>
+          <p class="muted">Start from a model portfolio or build your own. Enter shares you already own so new money goes where it's needed.</p>
+        </div>
+      </div>
+
+      <div id="models" class="models"></div>
+
+      <div class="search">
+        <label for="search-input" class="sr-only">Add an ETF or stock</label>
+        <input id="search-input" type="search" placeholder="Add an ETF or stock: try VOO, bond, Apple, world…" autocomplete="off" />
+        <ul id="search-results" class="search-results" role="listbox" hidden></ul>
+      </div>
+
+      <div class="table-scroll">
+        <table class="positions">
+          <thead>
+            <tr>
+              <th>Holding</th>
+              <th class="num">Price</th>
+              <th class="num">Target %</th>
+              <th class="num">Shares owned</th>
+              <th class="num">Value</th>
+              <th class="num">Now %</th>
+              <th aria-label="Remove"></th>
+            </tr>
+          </thead>
+          <tbody id="positions-body"></tbody>
+          <tfoot>
+            <tr>
+              <td><span id="target-status"></span></td>
+              <td></td>
+              <td class="num" id="target-total"></td>
+              <td></td>
+              <td class="num" id="value-total"></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p id="empty-mix" class="empty" hidden>No holdings yet. Pick a model portfolio above or search for an ETF.</p>
+      <div class="row-actions">
+        <button id="even-btn" class="ghost" type="button">Split evenly</button>
+        <button id="refresh-btn" class="ghost" type="button">Refresh prices</button>
+        <span id="price-asof" class="muted small"></span>
+      </div>
+    </section>
+
+    <!-- Step 2 -->
+    <section class="card" aria-labelledby="invest-h">
+      <div class="step-head">
+        <span class="step">2</span>
+        <div>
+          <h2 id="invest-h">Invest</h2>
+          <p class="muted">We put your money into whatever is most below target first, so you rebalance just by investing.</p>
+        </div>
+      </div>
+
+      <form id="invest-form" class="invest-form">
+        <label class="field big">
+          <span>Amount to invest</span>
+          <div class="money"><span>$</span><input id="amount" type="number" min="0" step="any" inputmode="decimal" value="1000" /></div>
+        </label>
+        <fieldset class="seg">
+          <legend>Mode</legend>
+          <label><input type="radio" name="mode" value="invest" checked /> Buy only</label>
+          <label><input type="radio" name="mode" value="rebalance" /> Full rebalance (buy &amp; sell)</label>
+        </fieldset>
+        <fieldset class="seg">
+          <legend>Shares</legend>
+          <label><input type="radio" name="frac" value="whole" checked /> Whole shares</label>
+          <label><input type="radio" name="frac" value="fractional" /> Fractional</label>
+        </fieldset>
+        <label class="field">
+          <span>Skip orders under</span>
+          <div class="money"><span>$</span><input id="min-order" type="number" min="0" step="any" value="0" /></div>
+        </label>
+        <label class="field">
+          <span>Broker fee per order</span>
+          <div class="money"><span>$</span><input id="fee" type="number" min="0" step="any" value="0" /></div>
+        </label>
+        <button class="primary" type="submit">Calculate my orders</button>
+      </form>
+
+      <div id="plan" hidden>
+        <div class="plan-summary" id="plan-summary"></div>
+        <div class="table-scroll">
+          <table class="orders">
+            <thead><tr><th>Action</th><th>Ticker</th><th class="num">Shares</th><th class="num">Est. price</th><th class="num">Est. total</th></tr></thead>
+            <tbody id="orders-body"></tbody>
+          </table>
+        </div>
+        <p id="plan-note" class="muted small"></p>
+        <h3 class="sub">Before → after</h3>
+        <div id="drift-bars" class="drift"></div>
+        <div class="row-actions">
+          <button id="copy-btn" class="ghost" type="button">Copy order list</button>
+          <button id="csv-btn" class="ghost" type="button">Download CSV</button>
+          <button id="apply-btn" class="primary" type="button">I placed these orders ✓</button>
+        </div>
+        <p class="muted small">Place these orders with your own broker. Prices move: use limit orders near the estimate, and adjust share counts if prices have changed.</p>
+      </div>
+    </section>
+
+    <!-- Step 3 -->
+    <section class="card" aria-labelledby="grow-h">
+      <div class="step-head">
+        <span class="step">3</span>
+        <div>
+          <h2 id="grow-h">Make it a habit</h2>
+          <p class="muted">See what investing regularly could add up to. Projections assume a steady return; real markets go up and down.</p>
+        </div>
+      </div>
+      <div class="grow-grid">
+        <div class="grow-inputs">
+          <label class="field"><span>Invest every month</span><div class="money"><span>$</span><input id="g-monthly" type="number" min="0" step="any" value="500" /></div></label>
+          <label class="field"><span>For how many years</span><input id="g-years" type="range" min="1" max="40" value="20" /><output id="g-years-out">20 years</output></label>
+          <fieldset class="seg">
+            <legend>Assumed yearly return</legend>
+            <label><input type="radio" name="ret" value="0.04" /> Cautious 4%</label>
+            <label><input type="radio" name="ret" value="0.06" checked /> Moderate 6%</label>
+            <label><input type="radio" name="ret" value="0.08" /> Optimistic 8%</label>
+          </fieldset>
+        </div>
+        <div class="grow-out">
+          <div class="stats" id="g-stats"></div>
+          <svg id="g-chart" class="chart" viewBox="0 0 600 260" role="img" aria-label="Projected portfolio growth"></svg>
+          <div class="legend"><span><i class="sw value"></i>Projected value</span><span><i class="sw contrib"></i>Money you put in</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="hist-h">
+      <h2 id="hist-h">Activity</h2>
+      <ul id="history" class="history"></ul>
+      <p id="history-empty" class="empty">Orders you mark as placed show up here.</p>
+    </section>
+
+    <footer class="foot muted small">
+      EasyInvest is a planning tool, not financial advice, and it does not place trades. Mock prices are illustrative only.
+      Your portfolio is saved only in this browser.
+      <button id="reset-btn" class="linkish" type="button">Reset everything</button>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>

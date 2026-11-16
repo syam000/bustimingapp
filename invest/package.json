@@ -1,0 +1,24 @@
+{
+  "name": "easyinvest",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Make investing in ETFs and stocks easier: set a target mix, enter an amount, get the exact orders to place.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "mock": "MOCK=1 node server.js",
+    "test": "node --test",
+    "cf:dev": "cf dev",
+    "build": "cf build",
+    "deploy": "cf deploy"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "beta",
+    "cf": "^1.0.0-beta.32",
+    "vite": "^8.3.0"
+  }
+}
