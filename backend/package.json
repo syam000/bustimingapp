@@ -1,0 +1,17 @@
+{
+  "name": "bustimingapp-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Small local backend for the SG Bus Timing Android app: proxies LTA DataMall (or an offline mock) and trims responses down before sending them to the phone.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "mock": "MOCK=1 node server.js",
+    "fetch-stops": "node scripts/fetch-stops.js",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}

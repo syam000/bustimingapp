@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple bus glyph: two body strokes + two wheels, on a transparent background. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M27,34 L81,34 A8,8 0 0 1 89,42 L89,70 A8,8 0 0 1 81,78 L27,78 A8,8 0 0 1 19,70 L19,42 A8,8 0 0 1 27,34 Z"
+        android:fillColor="#FFFFFF" />
+    <path android:pathData="M27,34 L81,34 L81,50 L27,50 Z" android:fillColor="#B3E5FC" />
+    <circle android:cx="36" android:cy="80" android:radius="7" android:fillColor="#263238" />
+    <circle android:cx="72" android:cy="80" android:radius="7" android:fillColor="#263238" />
+</vector>
