@@ -1,4 +1,5 @@
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
@@ -47,6 +48,15 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+// Match Kotlin's JVM target to compileOptions above - otherwise the Kotlin
+// compiler defaults to whatever JDK is running Gradle (often newer than 17),
+// and AGP rejects compileDebugJavaWithJavac/compileDebugKotlin disagreeing.
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
