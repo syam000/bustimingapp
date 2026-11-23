@@ -38,6 +38,11 @@ class BackendApiClient(
     suspend fun getArrivals(stopCode: String): ArrivalsDto =
         get("$baseUrl/api/arrivals?stop=${java.net.URLEncoder.encode(stopCode, "UTF-8")}")
 
+    suspend fun getNearbyStops(lat: Double, lng: Double, radiusKm: Double? = null): NearbyResponseDto {
+        val radiusParam = radiusKm?.let { "&radiusKm=$it" }.orEmpty()
+        return get("$baseUrl/api/stops/nearby?lat=$lat&lng=$lng$radiusParam")
+    }
+
     private suspend inline fun <reified T> get(url: String): T {
         val body = request(url)
         return json.decodeFromString(body)

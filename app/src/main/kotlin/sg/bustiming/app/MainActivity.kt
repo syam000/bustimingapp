@@ -16,14 +16,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.osmdroid.config.Configuration
 import sg.bustiming.app.data.ArrivalsDto
 import sg.bustiming.app.data.BusStopDto
 import sg.bustiming.app.data.ServiceDto
@@ -31,33 +37,71 @@ import sg.bustiming.app.data.WatchedStop
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
+private enum class Tab(val label: String, val emoji: String) {
+    FAVORITES("Favorites", "★"), // ★
+    MAP("Nearby", "📍"),    // 📍
+}
+
 class MainActivity : ComponentActivity() {
     private val viewModel: BusTimingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // osmdroid needs a user agent (some tile servers reject requests
+        // without one) and a writable cache dir - the app's own cache dir
+        // avoids needing any storage permission.
+        Configuration.getInstance().apply {
+            userAgentValue = packageName
+            osmdroidTileCache = cacheDir
+        }
+
         setContent {
             MaterialTheme {
-                // targetSdk 35 draws edge-to-edge by default, so content
-                // would otherwise start underneath the status bar (and any
-                // notch/nav bar) - safeDrawingPadding() keeps it clear of
-                // all of that.
-                Surface(modifier = Modifier.fillMaxSize().safeDrawingPadding()) {
-                    BusTimingScreen(viewModel)
+                AppScaffold(viewModel)
+            }
+        }
+    }
+}
+
+@Composable
+private fun AppScaffold(viewModel: BusTimingViewModel) {
+    var tab by remember { mutableStateOf(Tab.FAVORITES) }
+
+    Scaffold(
+        // targetSdk 35 draws edge-to-edge by default, so content would
+        // otherwise start underneath the status bar/notch/nav bar.
+        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
+        bottomBar = {
+            NavigationBar {
+                Tab.entries.forEach { entry ->
+                    NavigationBarItem(
+                        selected = tab == entry,
+                        onClick = { tab = entry },
+                        icon = { Text(entry.emoji) },
+                        label = { Text(entry.label) },
+                    )
                 }
+            }
+        },
+    ) { padding ->
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            when (tab) {
+                Tab.FAVORITES -> FavoritesScreen(viewModel)
+                Tab.MAP -> MapScreen(viewModel)
             }
         }
     }
 }
 
 /**
- * The entire app: one screen, no navigation. A search field, matching
- * stop results below it (from the backend's small bus-stop dataset), and
- * the list of watched stops with their live (or mock) arrival times, all
- * served by this app's own backend - the phone never calls LTA directly.
+ * Search field, matching stop results below it (from the backend's small
+ * bus-stop dataset), and the list of watched stops with their live (or
+ * mock) arrival times - all served by this app's own backend, the phone
+ * never calls LTA directly.
  */
 @Composable
-fun BusTimingScreen(viewModel: BusTimingViewModel) {
+fun FavoritesScreen(viewModel: BusTimingViewModel) {
     val query by viewModel.query.collectAsState()
     val searchResults by viewModel.searchResults.collectAsState()
     val watched by viewModel.watched.collectAsState()

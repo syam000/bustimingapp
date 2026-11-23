@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- For the "nearby stops" map screen; COARSE is enough (city-block
+         accuracy), FINE is requested too since it's still just one runtime
+         prompt and gives a steadier position for the map. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- usesCleartextTraffic: this app only ever talks to its own local
          backend over plain http (emulator/LAN, never deployed) - see

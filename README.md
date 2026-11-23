@@ -16,16 +16,30 @@ Android app (Kotlin + Compose)  --HTTP-->  backend/ (Node.js)  --HTTPS-->  LTA D
 
 - **`backend/`** - a small, dependency-free Node.js server. Holds the LTA
   API key (it never reaches the phone), does the real/mock switch, and
-  exposes 3 plain JSON routes with a deliberately slim response shape
+  exposes 4 plain JSON routes with a deliberately slim response shape
   (e.g. arrivals are just `{stop, mode, services: [{no, operator, etas}]}`
-  - no coordinates, load, type, or origin/destination codes). It also
-  caches each stop's arrivals for 8 seconds, so repeated polling doesn't
-  hit LTA on every request.
-- **`app/`** - the Android application: one screen, no navigation,
-  default Material 3 styling (no custom theme). A search field (debounced,
-  so fast typing doesn't fire a request per keystroke), a "Watched stops"
-  list below it, each watched stop polling the backend every 15 seconds.
+  - no load/type/origin-destination codes). It also caches each stop's
+  arrivals for 8 seconds, so repeated polling doesn't hit LTA on every
+  request.
+- **`app/`** - the Android application, two screens via a bottom nav bar,
+  default Material 3 styling (no custom theme):
+  - **Favorites** - a search field (debounced, so fast typing doesn't fire
+    a request per keystroke), a "Watched stops" list below it, each
+    watched stop polling the backend every 15 seconds.
+  - **Nearby** - your phone's current location (plain `android.location`,
+    no Google Play services) plotted on an [OpenStreetMap](https://www.openstreetmap.org/)
+    view via [osmdroid](https://github.com/osmdroid/osmdroid) (free, no
+    API key, no account), with nearby bus stops marked and listed below
+    it to add to your watched stops.
+
   Watched stops are persisted locally via plain `SharedPreferences`.
+
+  **Map service note:** osmdroid/OpenStreetMap was picked specifically
+  because it needs no API key or billing account (unlike Google Maps or
+  Mapbox's free tiers, which both still require signing up for one) - it
+  fits a local, not-deployed project best. The tradeoff: map tiles use
+  noticeably more mobile data than the rest of this app's plain-text
+  screens.
 
 ## Running it locally
 
@@ -78,10 +92,16 @@ cd backend
 npm test
 ```
 
-9 tests: the mock arrival generator (shape, determinism, the fixed
-invalid service-number case), the bundled sample stops, and the
-slim-response mapping (including a payload-size assertion, confirming the
-trimmed shape is well under half the size of the full LTA shape).
+16 tests: the mock arrival generator (shape, determinism, the fixed
+invalid service-number case), the bundled sample stops, the slim-response
+mapping (including a payload-size assertion, confirming the trimmed shape
+is well under half the size of the full LTA shape), the haversine
+distance helper, and the nearby-stops radius/sort/limit logic.
+
+Note: the bundled sample is only 15 interchange-level stops spread across
+Singapore, so "Nearby" will often come up empty unless you're standing
+right next to one of them - run `fetch-stops` (see above) for the full
+~5,000-stop list and real nearby results anywhere.
 
 ## A note on this sandbox
 

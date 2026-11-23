@@ -6,9 +6,10 @@
 // to keep the phone's mobile data usage low.
 //
 // Routes:
-//   GET  /api/config           -> { mode: "live" | "mock" }
-//   GET  /api/stops?q=text     -> matching bus stops (local dataset), slim shape
-//   GET  /api/arrivals?stop=NN -> live or mock bus arrival timings, slim shape
+//   GET  /api/config               -> { mode: "live" | "mock" }
+//   GET  /api/stops?q=text         -> matching bus stops (local dataset), slim shape
+//   GET  /api/stops/nearby?lat=&lng=&radiusKm=  -> stops within radiusKm, closest first, with coordinates
+//   GET  /api/arrivals?stop=NN     -> live or mock bus arrival timings, slim shape
 //
 // Run with: npm start   (or MOCK=1 npm start to force offline mock data)
 
@@ -22,6 +23,7 @@ import { getBusArrival, LtaApiError } from "./lib/ltaClient.js";
 import { getMockArrivals } from "./lib/mock.js";
 import { SAMPLE_BUS_STOPS } from "./lib/busStopsSample.js";
 import { slimStop, slimArrivals } from "./lib/slim.js";
+import { findNearbyStops, DEFAULT_RADIUS_KM } from "./lib/nearby.js";
 
 loadEnv();
 
@@ -80,6 +82,20 @@ async function handleStops(req, res, query) {
   sendJson(res, 200, { count: results.length, stops: results.slice(0, 50).map(slimStop) });
 }
 
+async function handleNearbyStops(req, res, query) {
+  const lat = Number(query.get("lat"));
+  const lng = Number(query.get("lng"));
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    sendJson(res, 400, { error: "Query params 'lat' and 'lng' must both be numbers." });
+    return;
+  }
+  const radiusKm = Number(query.get("radiusKm")) || DEFAULT_RADIUS_KM;
+
+  const stops = await loadBusStops();
+  const results = findNearbyStops(stops, lat, lng, radiusKm);
+  sendJson(res, 200, { count: results.length, radiusKm, stops: results });
+}
+
 async function handleArrivals(req, res, query) {
   const stop = (query.get("stop") || "").trim();
   if (!/^\d{3,5}$/.test(stop)) {
@@ -116,6 +132,8 @@ const server = createServer(async (req, res) => {
       sendJson(res, 200, { mode: LIVE_MODE ? "live" : "mock" });
     } else if (pathname === "/api/stops") {
       await handleStops(req, res, searchParams);
+    } else if (pathname === "/api/stops/nearby") {
+      await handleNearbyStops(req, res, searchParams);
     } else if (pathname === "/api/arrivals") {
       await handleArrivals(req, res, searchParams);
     } else {
