@@ -1,0 +1,12 @@
+# Copy this file to local.properties (git-ignored) and adjust as needed.
+# Android Studio normally writes sdk.dir automatically.
+
+# sdk.dir=/path/to/Android/sdk
+
+# Base URL of this project's backend (see /backend). The default below is
+# the Android emulator's alias for the host machine's localhost, so it
+# works out of the box when running `npm start` in backend/ and the app
+# in the emulator. For a real device on the same Wi-Fi/LAN as your
+# computer, use your computer's LAN IP instead, e.g.:
+# backend.base.url=http://192.168.1.50:3000
+backend.base.url=http://10.0.2.2:3000

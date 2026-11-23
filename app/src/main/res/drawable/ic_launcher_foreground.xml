@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple bus glyph: two body strokes + two wheels, on a transparent background. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M27,34 L81,34 A8,8 0 0 1 89,42 L89,70 A8,8 0 0 1 81,78 L27,78 A8,8 0 0 1 19,70 L19,42 A8,8 0 0 1 27,34 Z"
+        android:fillColor="#FFFFFF" />
+    <path android:pathData="M27,34 L81,34 L81,50 L27,50 Z" android:fillColor="#B3E5FC" />
+    <!-- Wheels: vector drawables have no <circle> element (that's SVG, not
+         Android's format) - each wheel is a path drawn as two half-circle
+         arcs instead. -->
+    <path android:pathData="M29,80 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" android:fillColor="#263238" />
+    <path android:pathData="M65,80 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" android:fillColor="#263238" />
+</vector>
